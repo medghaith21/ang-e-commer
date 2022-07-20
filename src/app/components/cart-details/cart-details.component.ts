@@ -8,7 +8,10 @@ import { CartService } from 'src/app/services/cart.service';
   styleUrls: ['./cart-details.component.css']
 })
 export class CartDetailsComponent implements OnInit {
-cartItems : CartItem[] = [];
+  
+
+cartItems : CartItem[] = JSON.parse(localStorage.getItem('cartItems') || '{}');
+// localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '{}') : [];
 totalPrice: number =0;
 totalQuantity: number = 0;
 
@@ -16,6 +19,8 @@ totalQuantity: number = 0;
 
   ngOnInit(): void {
     this.listCartDetails()
+    this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
+    console.log(this.cartItems)
   }
 
   listCartDetails(){
@@ -39,14 +44,18 @@ totalQuantity: number = 0;
   incrementQuantity(theCartItem: CartItem) {
     this.cartService.addToCart(theCartItem);
     console.log(this.cartItems)
+    this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
   }
 
   decrementQuantity(theCartItem: CartItem) {
     this.cartService.decrementQuantity(theCartItem);
+    this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
+    
   }
 
   remove(theCartItem: CartItem) {
     this.cartService.remove(theCartItem);
+    this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
   }
 
 

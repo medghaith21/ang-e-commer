@@ -7,10 +7,11 @@ import { CartItem } from '../common/cart-item';
 })
 export class CartService {
 
-  cartItems : CartItem[] = []
+  cartItems : CartItem[] = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems') || '{}') : [];
 
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
+
 
   constructor() { }
 
@@ -28,7 +29,7 @@ export class CartService {
       // check if we found it
       alreadyExistsInCart = (existingCartItem != undefined);
     }
-
+    
     if (alreadyExistsInCart) {
       // increment the quantity
       existingCartItem.quantity++;
@@ -36,8 +37,10 @@ export class CartService {
     else {
       // just add the item to the array
       this.cartItems.push(theCartItem);
+      // this.cartItems =  [...this.cartItems, theCartItem]
     }
-
+    
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems))
     // compute cart total price and total quantity
     this.computeCartTotals();
   }
@@ -72,8 +75,8 @@ export class CartService {
   }
 
   decrementQuantity(theCartItem: CartItem) {
-
-    theCartItem.quantity--;
+    const item: CartItem = this.cartItems.find( tempCartItem => tempCartItem.id === theCartItem.id )!;
+    item.quantity--;
 
     if (theCartItem.quantity === 0) {
       this.remove(theCartItem);
@@ -81,6 +84,8 @@ export class CartService {
     else {
       this.computeCartTotals();
     }
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems))
+    
   }
 
   remove(theCartItem: CartItem) {
@@ -94,6 +99,8 @@ export class CartService {
 
       this.computeCartTotals();
     }
+
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems))
   }
 
 }

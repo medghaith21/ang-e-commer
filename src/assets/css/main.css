@@ -1630,7 +1630,7 @@ h2.title {
   margin: 15px -70px 10px 25px;
 }
 
-.cart_quantity_button a {
+.cart_quantity_button button {
   background:#F0F0E9;
   color: #696763;
   display: inline-block;
