@@ -1,3 +1,5 @@
+import { CategoryProduct } from "./category-product";
+
 export class Product {
     id!: number  ;
     name!:string;
@@ -8,5 +10,6 @@ export class Product {
     quantity!:number;
     createdDate!:Date;
     updatedDate!:Date;
+    category!: CategoryProduct
     
 }

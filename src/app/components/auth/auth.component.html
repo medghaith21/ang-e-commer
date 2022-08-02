@@ -5,12 +5,12 @@
             <div class="col-sm-4 col-sm-offset-1">
                 <div class="login-form"><!--login form-->
                     <h2>Login to your account</h2>
-                    <form #f="ngForm" (ngSubmit)="f.form.valid && login()">
+                    <form #h="ngForm" (ngSubmit)="h.form.valid && login()">
                         <div class="div alert alert-danger" *ngIf="errorMessage">
                             {{errorMessageLogin}}
                         </div>
-                        <input type="email" id="email" name="email" [(ngModel)]="user.email" #email="ngModel" placeholder="Email Address" required/>
-                        <input type="password" id="password" name="password" [(ngModel)]="user.password" #password="ngModel" placeholder="Password"/>
+                        <input type="email" id="emailLogin" name="emailLogin" [(ngModel)]="userLogin.email" #emailLogin="ngModel" placeholder="Email Address" required/>
+                        <input type="password" id="passwordLogin" name="passwordLogin" [(ngModel)]="userLogin.password" #passwordLogin="ngModel" placeholder="Password"/>
                         <span>
                             <input type="checkbox" class="checkbox"> 
                             Keep me signed in

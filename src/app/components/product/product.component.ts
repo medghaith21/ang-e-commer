@@ -13,7 +13,7 @@ export class ProductComponent implements OnInit {
 
   products!: Product[];
 
-  constructor(private productService: ProductService, private cartService: CartService) {
+  constructor(public productService: ProductService, private cartService: CartService) {
 
   }
 
@@ -29,6 +29,10 @@ export class ProductComponent implements OnInit {
   addToCart(product: Product){
     const theCartItem = new CartItem(product);
     this.cartService.addToCart(theCartItem);
+  }
+
+  getProductImages(){
+    
   }
   
 

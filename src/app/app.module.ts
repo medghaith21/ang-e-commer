@@ -17,9 +17,16 @@ import { Routes, RouterModule} from '@angular/router';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { AuthComponent } from './components/auth/auth.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthGuard } from './guards/auth.guard';
 import { Role } from './common/role';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { AddProductComponent } from './admin/add-product/add-product.component';
+import { ToastrModule } from 'ngx-toastr';
+import { NavbarComponent } from './admin/navbar/navbar.component';
+import { ListProductComponent } from './admin/list-product/list-product.component';
+import { UpdateProductComponent } from './admin/update-product/update-product.component';
+
 
 
 const routes: Routes = [
@@ -27,6 +34,11 @@ const routes: Routes = [
    {path: '', component: HomeComponent},
    {path: 'cart-details', component: CartDetailsComponent},
    {path: 'login', component: AuthComponent},
+   {path: 'checkout', component: CheckoutComponent},
+   {path: 'dashboard', component: DashboardComponent},
+   {path: 'add', component: AddProductComponent},
+   { path: 'listProduct', component: ListProductComponent },
+   { path: 'updateProduct/:id', component: UpdateProductComponent },
    {path: 'admin', component: DashboardComponent, canActivate: [AuthGuard],
   data: {roles: [Role.ADMIN]}},
   // {path: '401', component: HomeComponent},
@@ -49,14 +61,21 @@ const routes: Routes = [
     ProductdetailsComponent,
     CartDetailsComponent,
     CarouselComponent,
-    AuthComponent
+    AuthComponent,
+    CheckoutComponent,
+    AddProductComponent,
+    NavbarComponent,
+    ListProductComponent,
+    UpdateProductComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
+    ReactiveFormsModule,
     FormsModule,
+    ToastrModule.forRoot(),
     
   ],
   providers: [ProductService],

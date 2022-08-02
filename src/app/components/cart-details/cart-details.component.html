@@ -22,7 +22,7 @@
                 <tbody>
                     <tr *ngFor="let cartItem of cartItems">
                         <td class="cart_product">
-                            <a href=""><img src="assets/images/cart/one.png" alt=""></a>
+                            <a href=""><img src="assets/front/images/cart/one.png" alt=""></a>
                         </td>
                         <td class="cart_description">
                             <h4><a href="">{{cartItem.name}}</a></h4>
@@ -129,7 +129,7 @@
                         <li>Total <span>{{totalPrice}} TND</span></li>
                     </ul>
                         <a class="btn btn-default update" href="">Update</a>
-                        <a class="btn btn-default check_out" href="">Check Out</a>
+                        <a class="btn btn-default check_out" routerLink="/checkout">Check Out</a>
                 </div>
             </div>
         </div>

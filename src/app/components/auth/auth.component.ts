@@ -12,6 +12,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 export class AuthComponent implements OnInit {
 
   user: User = new User();
+  userLogin: User = new User();
   errorMessage: string = "";
   errorMessageLogin: string = "";
   constructor(private authenticationService :AuthenticationService, private router: Router) { }
@@ -37,7 +38,7 @@ export class AuthComponent implements OnInit {
   }
 
   login(){
-    this.authenticationService.login(this.user).subscribe(data => {
+    this.authenticationService.login(this.userLogin).subscribe(data => {
       this.router.navigate(['/']);
     }, err => {  
         this.errorMessageLogin = 'Unxpected error. Erro is: '+ err?.errorMessageLogin;

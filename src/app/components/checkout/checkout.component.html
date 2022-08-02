@@ -1,0 +1,219 @@
+<app-header></app-header>
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+              <li><a href="#">Home</a></li>
+              <li class="active">Check out</li>
+            </ol>
+        </div><!--/breadcrums-->
+
+        <div class="step-one">
+            <h2 class="heading">Step1</h2>
+        </div>
+        <div class="checkout-options">
+            <h3>New User</h3>
+            <p>Checkout options</p>
+            <ul class="nav">
+                <li>
+                    <label><input type="checkbox"> Register Account</label>
+                </li>
+                <li>
+                    <label><input type="checkbox"> Guest Checkout</label>
+                </li>
+                <li>
+                    <a href=""><i class="fa fa-times"></i>Cancel</a>
+                </li>
+            </ul>
+        </div><!--/checkout-options-->
+
+        <div class="register-req">
+            <p>Please use Register And Checkout to easily get access to your order history, or use Checkout as Guest</p>
+        </div><!--/register-req-->
+        <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
+        <div class="shopper-informations">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="shopper-info">
+                        <p>Shopper Information</p>
+                        <div formGroupName="customer" class="form-area">
+                            <input formControlName="firstName" type="text" placeholder="First Name" >
+                            <input formControlName="lastName" placeholder="Last Name" >
+                            <input formControlName="email" type="text" placeholder="Email" >
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-sm-5 clearfix">
+                    <div class="bill-to">
+                        <p>Shipping Address</p>
+                        <div class="form-one">
+                            <div formGroupName="shippingAddress" class="form-area">
+                                <label>Country</label>
+                                <select formControlName="country" (change)="getStates('shippingAddress')">
+                                    <option *ngFor="let country of countries" [ngValue]="country">
+                                        {{ country.name }}
+                                    </option>
+                                </select>
+                                <input formControlName="street" type="text" placeholder="Street">
+                                <input formControlName="city" type="text" placeholder="City">
+                                <br/>
+                                <label>State</label>
+                                <select formControlName="state">
+                                    <option *ngFor="let state of shippingAddressStates" [ngValue]="state">
+                                        {{ state.name }}
+                                    </option>
+                                </select>
+                                <input formControlName="zipCode" type="text" placeholder="Zip Code">
+                                <label class="au-checkbox">
+                                    <input type="checkbox" (change)="copyShippingAddressToBillingAddress($event)">
+                                    <span class="au-checkmark"></span>Billing Address same as Shipping Address
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-two">
+                            <p class="pl-3">Billing Address</p>
+                            <div formGroupName="billingAddress" class="form-area">
+                                <input type="text" placeholder="Zip / Postal Code *">
+                                <select formControlName="country" (change)="getStates('billingAddress')">
+                                    <option *ngFor="let country of countries" [ngValue]="country">
+                                        {{ country.name }}
+                                    </option>
+                                </select>
+                               
+                                <input formControlName="street" type="text" placeholder="Street">
+                                <input formControlName="city" type="text" placeholder="City">
+                                <select formControlName="state">
+                                    <option *ngFor="let state of billingAddressStates" [ngValue]="state">
+                                        {{ state.name }}
+                                    </option>
+                                </select>
+                                <input formControlName="zipCode" type="text" placeholder="Zip Code">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-one">
+                        <p>Credit Card</p>
+                        <div formGroupName="creditCard" class="form-area">
+                            <label>Card Type</label>
+                            <select formControlName="cardType">
+                                <option>Visa</option>
+                                <option>Mastercard</option>
+                            </select>
+                            <input formControlName="nameOnCard" type="text" placeholder="Name on Card">
+                            <input formControlName="cardNumber" type="text" placeholder="Card Number">
+                            <input formControlName="securityCode" type="text" placeholder="Security Code">
+                            
+                            <label>Expiration Month</label>
+                            <select formControlName="expirationMonth">
+                                <option *ngFor="let month of creditCardMonths">
+                                    {{ month }}
+                                </option>
+                            </select>
+                            <label>Expiration Year</label>
+                            <select formControlName="expirationYear" (change)="handleMonthsAndYears()">
+                                <option *ngFor="let year of creditCardYears">
+                                    {{ year }}
+                                </option>
+                            </select>
+                        </div>
+                        
+                    </div>
+                </div>					
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-info">Purchase</button>
+        </div>
+    </form>
+        <div class="review-payment">
+            <h2>Review & Payment</h2>
+        </div>
+
+        <div class="table-responsive cart_info">
+            <table class="table table-condensed">
+                <thead>
+                    <tr class="cart_menu">
+                        <td class="image">Item</td>
+                        <td class="description"></td>
+                        <td class="price">Price</td>
+                        <td class="quantity">Quantity</td>
+                        <td class="total">Total</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cartItem of cartItems">
+                        <td class="cart_product">
+                            <a href=""><img src="assets/front/images/cart/one.png" alt=""></a>
+                        </td>
+                        <td class="cart_description">
+                            <h4><a href="">{{cartItem.name}}</a></h4>
+                            <p>Web ID: 1089772</p>
+                        </td>
+                        <td class="cart_price">
+                            <p>{{cartItem.nprix}} TND</p>
+                        </td>
+                        <td class="cart_quantity">
+                            <div class="cart_quantity_button">
+                                <button  class="cart_quantity_up" > + </button>
+                                <input class="cart_quantity_input" type="text" name="quantity" value="{{cartItem.quantity}}" autocomplete="off" size="2">
+                                <button  class="cart_quantity_down"> - </button>
+                            </div>
+                        </td>
+                        <td class="cart_total">
+                            <p class="cart_total_price">{{cartItem.quantity * cartItem.nprix}} TND</p>
+                        </td>
+                        <td class="cart_delete">
+                            <button  class="cart_quantity_delete" ><i class="fa fa-times"></i></button>
+                        </td>
+                    </tr>
+
+
+                   
+                    <tr>
+                        <td colspan="4">&nbsp;</td>
+                        <td colspan="2">
+                            <table class="table table-condensed total-result">
+                                <tr>
+                                    <td>Total Quantity</td>
+                                    <td>{{totalQuantity}} TND</td>
+                                </tr>
+                                <tr>
+                                    <td>Exo Tax</td>
+                                    <td>2 TND</td>
+                                </tr>
+                                <tr class="shipping-cost">
+                                    <td>Shipping Cost</td>
+                                    <td>Free</td>										
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td><span>{{totalPrice}}</span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="payment-options">
+                <span>
+                    <label><input type="checkbox"> Direct Bank Transfer</label>
+                </span>
+                <span>
+                    <label><input type="checkbox"> Check Payment</label>
+                </span>
+                <span>
+                    <label><input type="checkbox"> Paypal</label>
+                </span>
+            </div>
+    </div>
+</section> <!--/#cart_items-->
+
+
+<app-footer></app-footer>

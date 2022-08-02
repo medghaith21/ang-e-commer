@@ -14,14 +14,19 @@ import { CartService } from 'src/app/services/cart.service';
 export class ProductdetailsComponent implements OnInit {
 
   product:Product = new Product();
-
-  constructor(private productService: ProductService , private cartService: CartService,
+  files:any = []
+  id!: number
+  
+  constructor(public productService: ProductService , private cartService: CartService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
       this.productById();
     })
+    this.getProductImages()
+    
+    
   }
 
   productById() {
@@ -38,4 +43,11 @@ export class ProductdetailsComponent implements OnInit {
     this.cartService.addToCart(theCartItem);
 
   }
+
+  getProductImages(){
+    this.id = this.route.snapshot.params['id'];
+    this.productService.getImagesByProducts(this.id).subscribe(data => {
+      this.files = data
+    })    
+      }
 }

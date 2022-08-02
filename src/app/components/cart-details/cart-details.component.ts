@@ -21,6 +21,7 @@ totalQuantity: number = 0;
     this.listCartDetails()
     this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
     console.log(this.cartItems)
+    console.log(this.totalPrice)
   }
 
   listCartDetails(){
