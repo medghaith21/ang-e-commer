@@ -26,6 +26,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NavbarComponent } from './admin/navbar/navbar.component';
 import { ListProductComponent } from './admin/list-product/list-product.component';
 import { UpdateProductComponent } from './admin/update-product/update-product.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 
 
@@ -41,6 +42,7 @@ const routes: Routes = [
    { path: 'updateProduct/:id', component: UpdateProductComponent },
    {path: 'admin', component: DashboardComponent, canActivate: [AuthGuard],
   data: {roles: [Role.ADMIN]}},
+  {path: 'order-history', component: OrderHistoryComponent},
   // {path: '401', component: HomeComponent},
   // {path: 'category/:id', component: ProductListComponent},
   // {path: 'category', component: ProductListComponent},
@@ -66,7 +68,8 @@ const routes: Routes = [
     AddProductComponent,
     NavbarComponent,
     ListProductComponent,
-    UpdateProductComponent
+    UpdateProductComponent,
+    OrderHistoryComponent
   ],
   imports: [
     BrowserModule,

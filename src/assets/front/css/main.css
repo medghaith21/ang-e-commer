@@ -1899,10 +1899,10 @@ h2.title {
 }
 
 
-.shopper-info > form > input, 
-.form-two > form > select, 
-.form-two > form > input, 
-.form-one > form > input {
+.shopper-info > div > input, 
+.form-two > div > select, 
+.form-two > div > input, 
+.form-one > div > input {
   background:#F0F0E9;
   border: 0 none;
   margin-bottom:10px;
@@ -1911,7 +1911,7 @@ h2.title {
   font-weight: 300
 }
 
-.form-two > form > select {
+.form-two > div > select {
   padding:10px 5px
 }
 

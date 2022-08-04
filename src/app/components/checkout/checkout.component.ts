@@ -11,6 +11,8 @@ import { Order } from 'src/app/common/order';
 import { OrderItem } from 'src/app/common/order-item';
 import { Purchase } from 'src/app/common/purchase';
 import { User } from 'src/app/common/user';
+import { PaymentInfo } from 'src/app/common/payment-info';
+
 
 @Component({
   selector: 'app-checkout',
@@ -31,6 +33,14 @@ export class CheckoutComponent implements OnInit {
   shippingAddressStates: State[] = [];
   billingAddressStates: State[] = [];
 
+   stripe = Stripe("pk_test_51HGXXNFZZEoYtESMTOXZcTjubq4I49Iro22ewteencnmxfkAL5FP43xBRzOPbu3TuZc8zW9VdQQdNbKJBBCBUSpA00bo1qhgqW");
+
+  paymentInfo: PaymentInfo = new PaymentInfo();
+  cardElement: any;
+  displayError: any = "";
+
+  isDisabled: boolean = false;
+
   cartItems : CartItem[] = JSON.parse(localStorage.getItem('cartItems') || '{}');
 
   user: User = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser') || '{}')
@@ -40,6 +50,8 @@ export class CheckoutComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+
+    this.setupStripePaymentForm();
     
     this.user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser') || '{}') : null
     console.log(this.user)
@@ -106,6 +118,34 @@ export class CheckoutComponent implements OnInit {
 
     this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '{}');
  
+  }
+
+  setupStripePaymentForm() {
+
+    // get a handle to stripe elements
+    var elements = this.stripe.elements();
+
+    // Create a card element ... and hide the zip-code field
+    this.cardElement = elements.create('card', { hidePostalCode: true });
+
+    // Add an instance of card UI component into the 'card-element' div
+    this.cardElement.mount('#card-element');
+
+    // Add event binding for the 'change' event on the card element
+    this.cardElement.on('change', (event : any) => {
+
+      // get a handle to card-errors element
+      this.displayError = document.getElementById('card-errors');
+
+      if (event.complete) {
+        this.displayError.textContent = "";
+      } else if (event.error) {
+        // show validation error to customer
+        this.displayError.textContent = event.error.message;
+      }
+
+    });
+
   }
 
   reviewCartDetails() {
@@ -182,21 +222,62 @@ export class CheckoutComponent implements OnInit {
      // populate purchase - order and orderItems
      purchase.order = order;
      purchase.orderItems = orderItems;
+
+     this.paymentInfo.amount = Math.round(this.totalPrice * 100);
+    this.paymentInfo.currency = "USD"; 
+    this.paymentInfo.receiptEmail = purchase.customer.email;
  
-     // call REST API via the CheckoutService
-     this.checkoutService.placeOrder(purchase).subscribe({
-         next: response => {
-           alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
- 
-           // reset cart
-           this.resetCart();
- 
-         },
-         error: err => {
-           alert(`There was an error: ${err.message}`);
-         }
-       }
-     );
+    if (!this.checkoutFormGroup.invalid && this.displayError.textContent === "") {
+
+      this.isDisabled = true;
+
+      this.checkoutService.createPaymentIntent(this.paymentInfo).subscribe(
+        (paymentIntentResponse) => {
+          this.stripe.confirmCardPayment(paymentIntentResponse.client_secret,
+            {
+              payment_method: {
+                card: this.cardElement,
+                billing_details: {
+                  email: purchase.customer.email,
+                  name: `${purchase.customer.fname} ${purchase.customer.lname}`,
+                  address: {
+                    line1: purchase.billingAddress.street,
+                    city: purchase.billingAddress.city,
+                    state: purchase.billingAddress.state,
+                    postal_code: purchase.billingAddress.zipCode,
+                    country: this.checkoutFormGroup.controls['billingAddress'].value.country
+                  }
+                }
+              }
+            }, { handleActions: false })
+          .then(function(this: any, result: any)  {
+            if (result.error) {
+              // inform the customer there was an error
+              alert(`There was an error: ${result.error.message}`);
+              this.isDisabled = false;
+            } else {
+              // call REST API via the CheckoutService
+              this.checkoutService.placeOrder(purchase).subscribe({
+                next: (response: { orderTrackingNumber: any; }) => {
+                  alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
+
+                  // reset cart
+                  this.resetCart();
+                  this.isDisabled = false;
+                },
+                error: (err: { message: any; }) => {
+                  alert(`There was an error: ${err.message}`);
+                  this.isDisabled = false;
+                }
+              })
+            }            
+          }.bind(this));
+        }
+      );
+    } else {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+    }
   }
 
   resetCart() {
