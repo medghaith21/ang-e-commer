@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators }
 export class AddProductComponent implements OnInit {
 
   files:string  []  =  [];
+  file!:string
   selectedFiles!: FileList;
   images : string[] = [];
   product : Product = new Product()
@@ -57,6 +58,7 @@ export class AddProductComponent implements OnInit {
        formData.append('files', this.files[i]);
        console.log(formData)
      }
+     formData.append('file', this.file);
     // formData.append('file', this.userFile);
     
     this.productService.addTask(formData).subscribe(data => {
@@ -97,5 +99,26 @@ export class AddProductComponent implements OnInit {
       }
     }
   
+
+    onSelectSingleFile(event : any) {
+      if (event.target.files.length > 0) {
+        const file = event.target.files[0];
+        this.file = file;
+        // this.f['profile'].setValue(file);
+  
+        var mimeType = event.target.files[0].type;
+        if (mimeType.match(/image\/*/) == null) {
+          this.toastr.success('Only images are supported.');
+  
+          return;
+        }
+        var reader = new FileReader();
+        this.imagePath = file;
+        reader.readAsDataURL(file);
+        reader.onload = (_event) => {
+          this.imgURL = reader.result;
+        }
+      }
+    }
 
 }

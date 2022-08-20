@@ -27,6 +27,9 @@ import { NavbarComponent } from './admin/navbar/navbar.component';
 import { ListProductComponent } from './admin/list-product/list-product.component';
 import { UpdateProductComponent } from './admin/update-product/update-product.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { RequestBaseService } from './services/request-base.service';
+import { WishlistService } from './services/wishlist.service';
+import { CommentComponent } from './components/comment/comment.component';
 
 
 
@@ -69,7 +72,8 @@ const routes: Routes = [
     NavbarComponent,
     ListProductComponent,
     UpdateProductComponent,
-    OrderHistoryComponent
+    OrderHistoryComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +85,7 @@ const routes: Routes = [
     ToastrModule.forRoot(),
     
   ],
-  providers: [ProductService],
+  providers: [ProductService, WishlistService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

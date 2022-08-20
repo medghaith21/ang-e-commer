@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders, HttpEvent, HttpRequest  } from '@angular/commo
 import { Injectable } from '@angular/core';
 import {  FormGroup, }
   from '@angular/forms';
+import { Comment } from '../common/comment';
+import { User } from '../common/user';
 
 
 const httpOptions = {
@@ -24,7 +26,16 @@ export class ProductService {
 
   constructor(private httpClient: HttpClient) { }
 
+  storageUserAsStr: any = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser') || '{}') : null
+
   getProductList():Observable<Product[]>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+       'Content-Type': 'application/json',
+       'Authorization': `Bearer ${this.storageUserAsStr.token}`,
+      }),
+     withCredentials: true
+    };
     return this.httpClient.get<Product[]>(this.baseUrl+"/products")
   }
   getProductById(id:number):Observable<Product>{
@@ -35,8 +46,8 @@ export class ProductService {
     return this.httpClient.post(this.baseUrl+"/addproduct", formData);
   }
 
-  updateTask(formData: FormData): Observable<any> {
-    return this.httpClient.post(this.baseUrl+"/update", formData);
+  updateTask(id: number, formData: FormData): Observable<any> {
+    return this.httpClient.put(this.baseUrl+"/update/"+id, formData);
   }
 
 
@@ -69,6 +80,47 @@ export class ProductService {
   }
 
 
+  etoile(prodid:number,clientid:number,rev:string): Observable<any> {
+    return this.httpClient.get<any>('http://localhost:8181/product/add-etoile/'+prodid+'/'+clientid+'/'+rev);
+  }
+
+  addCom(c: Comment): Observable<Comment> {
+
+    return this.httpClient.post<Comment>('http://localhost:8181/comment/add-commentaire', c);
+  }
+
+  modifyCom(c: Comment): Observable<Comment> {
+
+    /*const httpOptions = {
+      headers: new HttpHeaders(
+        { 'Content-Type': 'application/json' }
+      )
+    };
+    //console.log(c.comment);
+    let userJSON = JSON.stringify(c);
+    //console.log(userJSON.toString());
+    */
+    return this.httpClient.put<Comment>('http://localhost:8181/comment/modify-commentaire', c);
+  }
+
+  deleteCom(id: any) {
+    return this.httpClient.delete<Comment>('http://localhost:8181/comment/remove-client/' + id)
+  }
+
+  getByIDCom(idc: number): Observable<Comment> {
+    return this.httpClient.get<Comment>('http://localhost:8181/comment/retrieve-commentaire/' + idc);
+  }
   
+
+  getByIDComUser(idc: number): Observable<User> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+       'Content-Type': 'application/json',
+       'Authorization': `Bearer ${this.storageUserAsStr.token}`,
+      }),
+     withCredentials: true
+    };
+    return this.httpClient.get<User>('http://localhost:8181/comment/getUser/' + idc, httpOptions);
+  }
 
 }

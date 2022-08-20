@@ -62,7 +62,7 @@ export class UpdateProductComponent implements OnInit {
     formData.append('product', JSON.stringify(product));
     formData.append('file', this.userFile);
     console.log(formData);
-    this.productService.addTask(formData).subscribe(data => {
+    this.productService.updateTask(this.id, formData).subscribe(data => {
       this.router.navigate(['/']);
     }, err => {
       if(err?.status === 409 ){

@@ -16,6 +16,8 @@ export class ProductdetailsComponent implements OnInit {
   product:Product = new Product();
   files:any = []
   id!: number
+  sttr:string='0';
+  user: any = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser') || '{}') : null
   
   constructor(public productService: ProductService , private cartService: CartService,
     private route: ActivatedRoute) { }
@@ -49,5 +51,16 @@ export class ProductdetailsComponent implements OnInit {
     this.productService.getImagesByProducts(this.id).subscribe(data => {
       this.files = data
     })    
+      }
+
+      addetoile(){
+    
+        this.productService.etoile(this.product.id,this.user.id,this.sttr).subscribe(
+          (data)=>{this.productById()
+    
+          }
+    
+        );
+    
       }
 }
